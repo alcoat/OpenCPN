@@ -1,6 +1,11 @@
-/**************************************************************************
- *   Copyright (C) 2022 by David Register                                  *
- *   Copyright (C) 2022 Alec Leamas                                        *
+/***************************************************************************
+ *
+ * Project:  OpenCPN
+ * Purpose:  Autopilot output support
+ * Author:   David Register
+ *
+ ***************************************************************************
+ *   Copyright (C) 2025 by David S. Register                               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -17,33 +22,17 @@
  *   Free Software Foundation, Inc.,                                       *
  *   51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,  USA.         *
  **************************************************************************/
+#ifndef _AUTOPILOTOUTPUT_H__
+#define _AUTOPILOTOUTPUT_H__
 
-/**
- * \file
- * Implement comm_navmsg_bus.h i. e., NavMsgBus.
- */
+#include "comm_driver.h"
+#include "model/route.h"
 
-#include "model/comm_navmsg_bus.h"
+bool UpdateAutopilotN0183(Routeman &routeman);
+bool UpdateAutopilotN2K(Routeman &routeman);
 
-void NavMsgBus::Notify(std::shared_ptr<const NavMsg> msg) {
-  std::string key = NavAddr::BusToString(msg->bus) + "::" + msg->GetKey();
-  RegisterKey(key);
-  Observable(*msg).Notify(msg);
-}
+bool SendPGN129283(Routeman &routeman, AbstractCommDriver *driver);
+bool SendPGN129284(Routeman &routeman, AbstractCommDriver *driver);
+bool SendPGN129285(Routeman &routeman, AbstractCommDriver *driver);
 
-void NavMsgBus::RegisterKey(const std::string& key) {
-  {
-    std::lock_guard lock(m_mutex);
-    if (m_active_messages.find(key) == m_active_messages.end())
-      new_msg_event.Notify();
-    m_active_messages.insert(key);
-  }
-}
-
-NavMsgBus& NavMsgBus::GetInstance() {
-  static NavMsgBus instance;
-  return instance;
-}
-
-/** Handle changes in driver list. */
-void NavMsgBus::Notify(AbstractCommDriver const&) {}
+#endif
