@@ -76,10 +76,12 @@ set(
   ${MODEL_HDR_DIR}/datetime.h
   ${MODEL_HDR_DIR}/downloader.h
   ${MODEL_HDR_DIR}/ds_porttype.h
+  ${MODEL_HDR_DIR}/filters_on_disk.h
   ${MODEL_HDR_DIR}/garmin_protocol_mgr.h
   ${MODEL_HDR_DIR}/garmin_wrapper.h
   ${MODEL_HDR_DIR}/geodesic.h
   ${MODEL_HDR_DIR}/georef.h
+  ${MODEL_HDR_DIR}/gpx_document.h
   ${MODEL_HDR_DIR}/gui.h
   ${MODEL_HDR_DIR}/hyperlink.h
   ${MODEL_HDR_DIR}/idents.h
@@ -95,9 +97,12 @@ set(
   ${MODEL_HDR_DIR}/meteo_points.h
   ${MODEL_HDR_DIR}/multiplexer.h
   ${MODEL_HDR_DIR}/nav_object_database.h
+  ${MODEL_HDR_DIR}/navmsg_filter.h
   ${MODEL_HDR_DIR}/navutil_base.h
   ${MODEL_HDR_DIR}/nmea_log.h
   ${MODEL_HDR_DIR}/nmea_ctx_factory.h
+  ${MODEL_HDR_DIR}/notification.h
+  ${MODEL_HDR_DIR}/notification_manager.h
   ${MODEL_HDR_DIR}/ocpn_types.h
   ${MODEL_HDR_DIR}/ocpn_utils.h
   ${MODEL_HDR_DIR}/own_ship.h
@@ -179,9 +184,11 @@ set(SRC
   ${MODEL_SRC_DIR}/datetime.cpp
   ${MODEL_SRC_DIR}/downloader.cpp
   ${MODEL_SRC_DIR}/ds_porttype.cpp
+  ${MODEL_SRC_DIR}/filters_on_disk.cpp
   ${MODEL_SRC_DIR}/garmin_protocol_mgr.cpp
   ${MODEL_SRC_DIR}/geodesic.cpp
   ${MODEL_SRC_DIR}/georef.cpp
+  ${MODEL_SRC_DIR}/gpx_document.cpp
   ${MODEL_SRC_DIR}/gui.cpp
   ${MODEL_SRC_DIR}/hyperlink.cpp
   ${MODEL_SRC_DIR}/instance_handler.cpp
@@ -194,7 +201,10 @@ set(SRC
   ${MODEL_SRC_DIR}/mdns_service.cpp
   ${MODEL_SRC_DIR}/multiplexer.cpp
   ${MODEL_SRC_DIR}/nav_object_database.cpp
+  ${MODEL_SRC_DIR}/navmsg_filter.cpp
   ${MODEL_SRC_DIR}/navutil_base.cpp
+  ${MODEL_SRC_DIR}/notification.cpp
+  ${MODEL_SRC_DIR}/notification_manager.cpp
   ${MODEL_SRC_DIR}/ocpn_plugin.cpp
   ${MODEL_SRC_DIR}/ocpn_utils.cpp
   ${MODEL_SRC_DIR}/own_ship.cpp

@@ -37,6 +37,7 @@
 #include <wx/grid.h>
 #include <wx/wxhtml.h>
 
+#include "model/nmea_log.h"
 #include "ocpndc.h"
 #include "undo.h"
 
@@ -45,6 +46,8 @@
 #include "emboss_data.h"
 #include "S57Sector.h"
 #include "gshhs.h"
+#include "notification_manager_gui.h"
+#include "observable.h"
 
 class wxGLContext;
 class GSHHSChart;
@@ -149,7 +152,7 @@ class ChartCanvas : public wxWindow {
   friend class glChartCanvas;
 
 public:
-  ChartCanvas(wxFrame *frame, int canvasIndex);
+  ChartCanvas(wxFrame *frame, int canvasIndex, wxWindow *nmea_log);
   ~ChartCanvas();
 
   void SetupGlCanvas();
@@ -833,6 +836,7 @@ private:
 
   ViewPort VPoint;
   void PositionConsole(void);
+  wxWindow *m_nmea_log;
 
   wxColour PredColor();
   wxColour ShipColor();
@@ -977,6 +981,7 @@ private:
   void DrawEmboss(ocpnDC &dc, emboss_data *pemboss);
 
   void ShowBrightnessLevelTimedPopup(int brightness, int min, int max);
+  void HandleNotificationMouseClick();
 
   //    Data
   /** The width of the canvas in physical pixels. */
@@ -1260,6 +1265,9 @@ private:
   void OnJumpEaseTimer(wxTimerEvent &event);
   bool StartSmoothJump(double lat, double lon, double scale_ppm);
 
+  NotificationButton *m_notification_button;
+  NotificationsList *m_NotificationsList;
+  ObservableListener evt_notificationlist_change_listener;
   DECLARE_EVENT_TABLE()
 };
 

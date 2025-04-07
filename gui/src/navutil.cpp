@@ -85,7 +85,6 @@
 #include "Layer.h"
 #include "navutil.h"
 #include "nmea0183.h"
-#include "NMEALogWindow.h"
 #include "observable_globvar.h"
 #include "ocpndc.h"
 #include "ocpn_frame.h"
@@ -1037,12 +1036,6 @@ int MyConfig::LoadMyConfigRaw(bool bAsTemplate) {
 
   // We allow 0-99 backups ov navobj.xml
   Read(_T ( "KeepNavobjBackups" ), &g_navobjbackups);
-
-  NMEALogWindow::GetInstance().SetSize(Read(_T("NMEALogWindowSizeX"), 600L),
-                                       Read(_T("NMEALogWindowSizeY"), 400L));
-  NMEALogWindow::GetInstance().SetPos(Read(_T("NMEALogWindowPosX"), 10L),
-                                      Read(_T("NMEALogWindowPosY"), 10L));
-  NMEALogWindow::GetInstance().CheckPos(display_width, display_height);
 
   // Boolean to cater for legacy Input COM Port filer behaviour, i.e. show msg
   // filtered but put msg on bus.
@@ -2508,11 +2501,6 @@ void MyConfig::UpdateSettings() {
 
   Write(_T ( "ChartQuilting" ), g_bQuiltEnable);
 
-  Write(_T ( "NMEALogWindowSizeX" ), NMEALogWindow::GetInstance().GetSizeW());
-  Write(_T ( "NMEALogWindowSizeY" ), NMEALogWindow::GetInstance().GetSizeH());
-  Write(_T ( "NMEALogWindowPosX" ), NMEALogWindow::GetInstance().GetPosX());
-  Write(_T ( "NMEALogWindowPosY" ), NMEALogWindow::GetInstance().GetPosY());
-
   Write(_T ( "PreserveScaleOnX" ), g_bPreserveScaleOnX);
 
   Write(_T ( "StartWithTrackActive" ), g_bTrackCarryOver);
@@ -3648,16 +3636,6 @@ void AlphaBlending(ocpnDC &dc, int x, int y, int size_x, int size_y,
 
 #endif
   }
-}
-
-void GpxDocument::SeedRandom() {
-  /* Fill with random. Miliseconds hopefully good enough for our usage, reading
-   * /dev/random would be much better on linux and system guid function on
-   * Windows as well */
-  wxDateTime x = wxDateTime::UNow();
-  long seed = x.GetMillisecond();
-  seed *= x.GetTicks();
-  srand(seed);
 }
 
 void DimeControl(wxWindow *ctrl) {
