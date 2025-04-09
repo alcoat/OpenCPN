@@ -71,6 +71,25 @@ static bool IsUserFilter(const std::string& filter_name) {
   }
   return false;
 };
+
+static std::string TimeStamp(const NavmsgTimePoint& when) {
+  using namespace std::chrono;
+  using namespace std;
+
+  auto duration = when.time_since_epoch();
+  std::stringstream ss;
+  auto hrs = duration_cast<hours>(duration) % 24;
+  duration -= duration_cast<hours>(duration) / 24;
+  auto mins = duration_cast<minutes>(duration) % 60;
+  duration -= duration_cast<minutes>(duration) / 60;
+  auto secs = duration_cast<seconds>(duration) % 60;
+  duration -= duration_cast<seconds>(duration) / 60;
+  auto msecs = duration_cast<milliseconds>(duration);
+  ss << setw(2) << setfill('0') << hrs.count() % 24 << ":" << setw(2)
+     << mins.count() << ":" << setw(2) << secs.count() << "." << setw(3)
+     << msecs.count();
+  return ss.str();
+}
 /**
  * Quote arg string as required by VDR plugin, see
  * https://opencpn-manuals.github.io/main/vdr/log_format.html
@@ -125,12 +144,9 @@ static void AddVdrLogline(const Logline& ll, std::ostream& stream) {
 
 /** Write a line in the log using the standard format. */
 static void AddStdLogline(const Logline& ll, std::ostream& stream, char fs) {
+  if (!ll.navmsg) return;
   wxString ws;
-#ifndef __WXQT__  //  Date/Time on Qt are broken, at least for android
-  ws << wxDateTime::Now().FormatISOTime() << fs;
-#else
-  ws << "- ";
-#endif
+  ws << TimeStamp(ll.navmsg->created_at) << fs;
   if (ll.state.direction == NavmsgStatus::Direction::kOutput)
     ws << kUtfRightArrow << fs;
   else if (ll.state.direction == NavmsgStatus::Direction::kInput)
@@ -148,10 +164,10 @@ static void AddStdLogline(const Logline& ll, std::ostream& stream, char fs) {
   else
     ws << kUtfCheckMark << fs;
 
-  ws << (ll.navmsg ? ll.navmsg->source->iface : ".") << fs;
-  ws << (ll.navmsg ? NavAddr::BusToString(ll.navmsg->bus) : "-") << fs;
+  ws << ll.navmsg->source->iface << fs;
+  ws << NavAddr::BusToString(ll.navmsg->bus) << fs;
   if (ll.state.status != NavmsgStatus::State::kOk)
-    ws << (ll.error_msg.size() > 0 ? ll.error_msg : "Unknown  errror");
+    ws << (!ll.error_msg.empty() ? ll.error_msg : "Unknown  errror");
   else
     ws << "ok";
   ws << fs << ll.message << "\n";

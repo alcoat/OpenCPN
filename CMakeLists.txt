@@ -565,7 +565,7 @@ if (APPLE)
   # Bundle all of wxWidgets as a courtesy for plugins, see #2153
   set(wxWidgets_FIND_COMPONENTS
       net xml html adv aui core base media propgrid qa ribbon richtext webview
-      stc xrc
+      stc
   )
 elseif (_wx_selected_config MATCHES "qt-armv7")
   set(wxWidgets_FIND_COMPONENTS base core xml html adv aui)
@@ -829,8 +829,8 @@ set(GUI_HDRS
     ${GUI_HDR_DIR}/routemanagerdialog.h
     ${GUI_HDR_DIR}/routeman_gui.h
     ${GUI_HDR_DIR}/route_point_gui.h
+    ${GUI_HDR_DIR}/route_printout.h
     ${GUI_HDR_DIR}/route_validator.h
-    ${GUI_HDR_DIR}/routeprintout.h
     ${GUI_HDR_DIR}/RoutePropDlg.h
     ${GUI_HDR_DIR}/RoutePropDlgImpl.h
     ${GUI_HDR_DIR}/s57chart.h
@@ -858,7 +858,7 @@ set(GUI_HDRS
     ${GUI_HDR_DIR}/time_textbox.h
     ${GUI_HDR_DIR}/toolbar.h
     ${GUI_HDR_DIR}/track_gui.h
-    ${GUI_HDR_DIR}/trackprintout.h
+    ${GUI_HDR_DIR}/track_printout.h
     ${GUI_HDR_DIR}/TrackPropDlg.h
     ${GUI_HDR_DIR}/tty_scroll.h
     ${GUI_HDR_DIR}/udev_rule_mgr.h
@@ -957,8 +957,8 @@ set(GUI_SRC
     ${GUI_SRC_DIR}/routemanagerdialog.cpp
     ${GUI_SRC_DIR}/routeman_gui.cpp
     ${GUI_SRC_DIR}/route_point_gui.cpp
+    ${GUI_SRC_DIR}/route_printout.cpp
     ${GUI_SRC_DIR}/route_validator.cpp
-    ${GUI_SRC_DIR}/routeprintout.cpp
     ${GUI_SRC_DIR}/RoutePropDlg.cpp
     ${GUI_SRC_DIR}/RoutePropDlgImpl.cpp
     ${GUI_SRC_DIR}/s57obj.cpp
@@ -982,7 +982,7 @@ set(GUI_SRC
     ${GUI_SRC_DIR}/thumbwin.cpp
     ${GUI_SRC_DIR}/toolbar.cpp
     ${GUI_SRC_DIR}/track_gui.cpp
-    ${GUI_SRC_DIR}/trackprintout.cpp
+    ${GUI_SRC_DIR}/track_printout.cpp
     ${GUI_SRC_DIR}/TrackPropDlg.cpp
     ${GUI_SRC_DIR}/tty_scroll.cpp
     ${GUI_SRC_DIR}/udev_rule_mgr.cpp
