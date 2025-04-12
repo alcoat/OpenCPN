@@ -75,6 +75,7 @@
 #include "model/multiplexer.h"
 #include "model/nav_object_database.h"
 #include "model/navutil_base.h"
+#include "model/notification_manager.h"
 #include "model/own_ship.h"
 #include "model/plugin_comm.h"
 #include "model/plugin_loader.h"
@@ -636,7 +637,8 @@ static void onBellsFinishedCB(void *ptr) {
 
 static void OnDriverMsg(const ObservedEvt &ev) {
   auto msg = ev.GetString().ToStdString();
-  OCPNMessageBox(GetTopWindow(), msg, _("Communication Error"));
+  auto &noteman = NotificationManager::GetInstance();
+  noteman.AddNotification(NotificationSeverity::kInformational, msg, 60);
 }
 
 static NmeaLog *GetDataMonitor() {
@@ -4973,6 +4975,21 @@ void MyFrame::HandleGPSWatchdogMsg(std::shared_ptr<const GPSWatchdogMsg> msg) {
       bGPSValid = false;
       m_fixtime = 0;  // Invalidate fix time
       if (last_bGPSValid != bGPSValid) UpdateGPSCompassStatusBoxes(true);
+
+      // Possible notification on position watchdog timeout..
+      // if fix has been valid for at least 5 minutes, and then lost,
+      // then post a critical notification
+      if (m_fix_start_time.IsValid()) {
+        wxDateTime now = wxDateTime::Now();
+        wxTimeSpan span = now - m_fix_start_time;
+        if (span.IsLongerThan(wxTimeSpan(0, 5))) {
+          auto &noteman = NotificationManager::GetInstance();
+          std::string msg = "GNSS Position fix lost";
+          noteman.AddNotification(NotificationSeverity::kCritical, msg);
+          m_fix_start_time = wxInvalidDateTime;
+        }
+      }
+
     } else if (msg->wd_source == GPSWatchdogMsg::WDSource::velocity) {
       bool last_bVelocityValid = bVelocityValid;
       bVelocityValid = false;
@@ -5029,6 +5046,11 @@ void MyFrame::HandleBasicNavMsg(std::shared_ptr<const BasicNavDataMsg> msg) {
 
   if (((msg->vflag & POS_UPDATE) == POS_UPDATE) &&
       ((msg->vflag & POS_VALID) == POS_VALID)) {
+    // Maintain valid fix start time
+    if (!m_fix_start_time.IsValid()) {
+      m_fix_start_time = wxDateTime::Now();
+    }
+
     // Check the position change, looking for a valid new fix.
     double dist, brg;
     DistanceBearingMercator(gLat, gLon, gLat_gt, gLon_gt, &brg, &dist);
